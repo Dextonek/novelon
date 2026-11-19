@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import mihon.core.metro.AppCoroutineScope
+import mihon.source.gutenberg.GutenbergSource
 import tachiyomi.domain.source.model.StubSource
 import tachiyomi.domain.source.repository.StubSourceRepository
 import tachiyomi.domain.source.service.SourceManager
@@ -40,6 +41,8 @@ class AndroidSourceManager(
 
     private val stubSourcesMap = ConcurrentHashMap<Long, StubSource>()
 
+    private val gutenbergSource by lazy { GutenbergSource() }
+
     override val sources: Flow<List<Source>> = sourcesMapFlow
         .filterNotNull()
         .map { it.values.toList() }
@@ -49,8 +52,9 @@ class AndroidSourceManager(
             extensionManager.loadedExtensionsFlow
                 .collectLatest { extensions ->
                     val mutableMap = ConcurrentHashMap<Long, Source>(
-                        mapOf(LocalSource.ID to localSource),
+                        mapOf(LocalSource.ID to localSource, gutenbergSource.id to gutenbergSource),
                     )
+                    registerStubSource(StubSource.from(gutenbergSource))
                     extensions.forEach { extension ->
                         extension.sources.forEach {
                             mutableMap[it.id] = it
