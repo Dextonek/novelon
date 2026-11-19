@@ -10,7 +10,7 @@ Novel reader forked from Mihon. Android only. Working branch: `novel/main`
 | 0 | Fork, clone, build unchanged app | Built; not yet run on a device |
 | 1 | Rebrand | Done, pushed to `novel/main` |
 | 2 | Novel source API | Done, pushed |
-| 3 | One built-in source (Project Gutenberg) | Next |
+| 3 | One built-in source (Project Gutenberg) | In progress: chapter splitter done; catalogue blocked |
 | 4 | Text reader (Compose, paragraphs, progress in `chapter.last_page_read`, reader settings) | Pending |
 | 5 | Offline downloads as `chapter.html` — end of first usable version | Pending |
 | 6 | Local EPUB in `source-local` | Pending |
@@ -43,6 +43,15 @@ stay as they are; only user-facing text changes.
     Repo listings have no lib-version filter yet; a Mihon repo would still list extensions that then
     fail to load — handle in Phase 7.
 
+- Phase 3 so far (committed locally, not pushed):
+  - `mihon.source.gutenberg.GutenbergBook` splits a Gutenberg HTML book at its most frequent h1–h3 heading,
+    strips the licence (`#pg-header`/`#pg-footer` or the `*** START/END OF` lines) and page numbers, makes
+    image URLs absolute, prefixes act/part names, and keys chapters by the heading's anchor id (`n<index>`
+    if none). Unit tests on trimmed fixtures; also checked by hand on 1342, 2600, 1661, 844, 1524, 98 from
+    the gutenberg.pglaf.org mirror (older `-h.htm` files).
+  - Not yet verified: the newer generated page on the main site (`/ebooks/<id>.html.images`); gutenberg.org
+    was down for maintenance (503) on 2026-11-19.
+
 ## Build
 
 ```powershell
@@ -64,13 +73,23 @@ $env:JAVA_HOME = 'C:\Program Files\Eclipse Adoptium\jdk-24.0.2.12-hotspot'
   callback schemes. Needs own tracker app registrations — decide later.
 - No default extension repos existed, so nothing to remove.
 
+## Blocked
+
+- Phase 3 catalogue. Gutendex (gutendex.com, JSON) answers the popular list in 0.2 s, but search and the
+  newest-first sort timed out after 60 s on 2026-11-19; the app's read timeout is 30 s. gutenberg.org's own
+  catalogue feed (OPDS) couldn't be fetched because the site was down. Re-time Gutendex and fetch a real OPDS
+  response before writing the catalogue code; switching from Gutendex needs the user's OK.
+- Gutenberg's robot-access policy (gutenberg.org/policy/robot_access.html) is unread (site down). Read it
+  before deciding how the app fetches books.
+
 ## Waiting on the user
 
 - Install the debug APK on a phone or emulator and confirm it starts.
 
 ## Next step
 
-Phase 3: built-in Project Gutenberg source.
+Phase 3: catalogue (see Blocked), then `GutenbergSource` registered next to `LocalSource` in
+`AndroidSourceManager`, then one run on a phone.
 
 ## Decisions
 
