@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import eu.kanade.domain.base.BasePreferences
 import eu.kanade.domain.manga.model.readingMode
 import eu.kanade.tachiyomi.ui.reader.ReaderViewModel
+import eu.kanade.tachiyomi.ui.reader.novel.readsAsText
 import eu.kanade.tachiyomi.ui.reader.viewer.LongStripSettings
 import eu.kanade.tachiyomi.ui.reader.viewer.NavigationSettings
 import eu.kanade.tachiyomi.ui.reader.viewer.PagedSettings
@@ -65,6 +66,16 @@ class ReaderSettingsViewModel(
      * Whether the viewers are the WebGPU ones.
      */
     val isWebGpu = basePreferences.highQualityRenderer
+
+    /** Whether the open chapter is read as text by the novel viewer. */
+    val readsText = readerViewModel.state
+        .map { readsAsText(it.source) }
+        .distinctUntilChanged()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    val novelText = settings(preferences.novelFontSize, preferences.novelLineSpacing) {
+        NovelTextSettings(fontSize = novelFontSize.get(), lineSpacingPercent = novelLineSpacing.get())
+    }
 
     val general = settings(
         preferences.readerTheme,

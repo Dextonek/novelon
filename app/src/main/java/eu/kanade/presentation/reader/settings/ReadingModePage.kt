@@ -26,6 +26,12 @@ import java.text.NumberFormat
 
 @Composable
 internal fun ColumnScope.ReadingModePage(viewModel: ReaderSettingsViewModel) {
+    val readsText by viewModel.readsText.collectAsState()
+    if (readsText) {
+        NovelViewerSettings(viewModel)
+        return
+    }
+
     val isWebGpu by viewModel.isWebGpu.collectAsState()
     if (isWebGpu) {
         WebGpuViewerSettings(viewModel)
@@ -237,4 +243,29 @@ internal fun TapZonesItems(
             }
         }
     }
+}
+
+@Composable
+private fun ColumnScope.NovelViewerSettings(viewModel: ReaderSettingsViewModel) {
+    val fontSize by viewModel.preferences.novelFontSize.collectAsState()
+    SliderItem(
+        value = fontSize,
+        valueRange = ReaderPreferences.NOVEL_FONT_SIZE_RANGE,
+        label = stringResource(MR.strings.pref_novel_font_size),
+        valueString = fontSize.toString(),
+        onChange = viewModel.preferences.novelFontSize::set,
+        pillColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+    )
+
+    val lineSpacing by viewModel.preferences.novelLineSpacing.collectAsState()
+    val lineSpacingRange = ReaderPreferences.NOVEL_LINE_SPACING_RANGE
+    SliderItem(
+        value = lineSpacing,
+        valueRange = lineSpacingRange,
+        steps = (lineSpacingRange.last - lineSpacingRange.first) / lineSpacingRange.step - 1,
+        label = stringResource(MR.strings.pref_novel_line_spacing),
+        valueString = NumberFormat.getInstance().format(lineSpacing / 100f),
+        onChange = viewModel.preferences.novelLineSpacing::set,
+        pillColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+    )
 }

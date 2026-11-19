@@ -100,6 +100,11 @@ class ReaderPreferences(
 
     val webtoonSidePadding: Preference<Int> = preferenceStore.getInt("webtoon_side_padding", WEBTOON_PADDING_MIN)
 
+    val novelFontSize: Preference<Int> = preferenceStore.getInt("novel_font_size", 18)
+
+    /** Line height as a percentage of the font size. */
+    val novelLineSpacing: Preference<Int> = preferenceStore.getInt("novel_line_spacing", 150)
+
     val readerHideThreshold: Preference<ReaderHideThreshold> = preferenceStore.getEnum(
         "reader_hide_threshold",
         ReaderHideThreshold.LOW,
@@ -399,6 +404,9 @@ class ReaderPreferences(
     companion object {
         const val WEBTOON_PADDING_MIN = 0
         const val WEBTOON_PADDING_MAX = 25
+
+        val NOVEL_FONT_SIZE_RANGE = 12..32
+        val NOVEL_LINE_SPACING_RANGE = 100..250 step 10
 
         const val MILLI_CONVERSION = 100
 
