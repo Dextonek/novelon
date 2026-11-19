@@ -14,6 +14,7 @@ import eu.kanade.tachiyomi.network.HttpException
 import eu.kanade.tachiyomi.source.UnmeteredSource
 import eu.kanade.tachiyomi.source.model.Page
 import eu.kanade.tachiyomi.source.online.HttpSource
+import eu.kanade.tachiyomi.ui.reader.novel.readsAsText
 import eu.kanade.tachiyomi.util.storage.DiskUtil
 import eu.kanade.tachiyomi.util.storage.DiskUtil.NOMEDIA_FILE
 import eu.kanade.tachiyomi.util.storage.saveTo
@@ -445,6 +446,11 @@ class Downloader(
         val tmpDir = mangaDir.createDirectory(chapterDirname + TMP_DIR_SUFFIX)!!
 
         try {
+            if (readsAsText(download.source)) {
+                downloadText(download, mangaDir, chapterDirname, tmpDir)
+                return
+            }
+
             // If the page list already exists, start from the file
             val pageList = download.pages ?: run {
                 // Otherwise, pull page list from network and add them to download object
@@ -516,6 +522,19 @@ class Downloader(
             download.status = Download.State.ERROR
             notifier.onError(error.message, download.chapter.name, download.manga.title, download.manga.id)
         }
+    }
+
+    /**
+     * Saves the text of a novel chapter as [TEXT_CHAPTER_FILE] in [tmpDir], then moves it into place as
+     * [chapterDirname]. Images in the text stay links to the source.
+     */
+    private suspend fun downloadText(download: Download, mangaDir: UniFile, chapterDirname: String, tmpDir: UniFile) {
+        download.status = Download.State.DOWNLOADING
+        val html = download.source.getChapterText(download.chapter.toSChapter())
+        tmpDir.createFile(TEXT_CHAPTER_FILE)!!.openOutputStream().use { it.write(html.toByteArray()) }
+        tmpDir.renameTo(chapterDirname)
+        cache.addChapter(chapterDirname, mangaDir, download.manga)
+        download.status = Download.State.DOWNLOADED
     }
 
     /**
@@ -843,6 +862,7 @@ class Downloader(
 
     companion object {
         const val TMP_DIR_SUFFIX = "_tmp"
+        const val TEXT_CHAPTER_FILE = "chapter.html"
         const val WARNING_NOTIF_TIMEOUT_MS = 30_000L
         const val CHAPTERS_PER_SOURCE_QUEUE_WARNING_THRESHOLD = 15
         private const val DOWNLOADS_QUEUED_WARNING_THRESHOLD = 30
