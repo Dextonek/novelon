@@ -5,6 +5,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -46,6 +47,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import mihon.app.di.appGraph
+import tachiyomi.presentation.core.util.collectAsState
 import kotlin.math.min
 
 /**
@@ -74,6 +76,7 @@ class NovelViewer(val activity: ReaderActivity) : Viewer {
     @Composable
     override fun Content(modifier: Modifier) {
         val text by settingsViewModel.novelText.collectAsState()
+        val showPageNumber by activity.appGraph.readerPreferences.showPageNumber.collectAsState()
 
         LaunchedEffect(listState) {
             snapshotFlow { listState.layoutInfo }.collect { info ->
@@ -104,6 +107,8 @@ class NovelViewer(val activity: ReaderActivity) : Viewer {
                 state = listState,
                 contentPadding = PaddingValues(horizontal = 20.dp, vertical = 24.dp),
                 modifier = modifier
+                    // Ends the text above the page number so lines don't scroll under it.
+                    .then(if (showPageNumber) Modifier.navigationBarsPadding().padding(bottom = 24.dp) else Modifier)
                     .nestedScroll(scrollConnection)
                     .pointerInput(Unit) {
                         detectTapGestures(
