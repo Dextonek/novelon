@@ -1,3 +1,7 @@
+> [!NOTE]
+> **Novelon** is a novel reader forked from [Mihon](https://github.com/mihonapp/mihon) and modified for text novels.
+> It is not affiliated with or endorsed by the Mihon project. Mihon is licensed under Apache-2.0, and so is this fork.
+
 <div align="center">
 
 <a href="https://mihon.app">
