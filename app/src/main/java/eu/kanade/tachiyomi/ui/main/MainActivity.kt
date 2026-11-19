@@ -123,7 +123,6 @@ import mihon.core.navigation.NavigatorDisplay
 import mihon.core.navigation.NewUpdateRoute
 import mihon.core.navigation.OnboardingRoute
 import mihon.core.navigation.RestoreBackupRoute
-import mihon.core.navigation.SupportUsRoute
 import mihon.core.navigation.TrackInfoDialogRoute
 import mihon.core.navigation.appEntries
 import mihon.core.navigation.rememberNavigator
@@ -146,13 +145,9 @@ import tachiyomi.presentation.core.components.material.Scaffold
 import tachiyomi.presentation.core.components.material.padding
 import tachiyomi.presentation.core.i18n.stringResource
 import tachiyomi.presentation.core.util.collectAsState
-import kotlin.time.Clock
-import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.Instant
 import kotlin.time.TimeSource
-import kotlin.time.times
 
 class MainActivity : BaseActivity() {
 
@@ -359,7 +354,6 @@ class MainActivity : BaseActivity() {
                 if (!isBenchmarkBuildType) {
                     if (isLaunch) CheckForUpdates()
                     ShowOnboarding()
-                    ShowDonationCampaign()
                 }
             }
         }
@@ -470,126 +464,6 @@ class MainActivity : BaseActivity() {
         LaunchedEffect(Unit) {
             if (!preferences.shownOnboardingFlow.get() && OnboardingRoute !in navigator.routes) {
                 navigator.push(OnboardingRoute)
-            }
-        }
-    }
-
-    @Composable
-    private fun ShowDonationCampaign() {
-        val navigator = LocalNavigator.current
-
-        var showCampaign by remember { mutableStateOf(false) }
-        if (showCampaign) {
-            val uriHandler = LocalUriHandler.current
-            val dismissSupportMessage = {
-                preferences.donationCampaignShown.set(true)
-                showCampaign = false
-            }
-            AdaptiveSheet(
-                onDismissRequest = dismissSupportMessage,
-                enableImplicitDismiss = false,
-            ) {
-                Column {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Column(
-                        modifier = Modifier
-                            .verticalScroll(rememberScrollState())
-                            .padding(16.dp)
-                            .weight(1f, fill = false)
-                            .fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        Text(
-                            text = stringResource(MR.strings.donationCampaign_title),
-                            color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.headlineSmall,
-                        )
-                        Text(
-                            text = stringResource(MR.strings.donationCampaign_paragraph1),
-                            style = MaterialTheme.typography.bodyMedium,
-                        )
-                        Text(
-                            text = stringResource(MR.strings.donationCampaign_paragraph2),
-                            style = MaterialTheme.typography.bodyMedium,
-                        )
-                        Text(
-                            text = stringResource(MR.strings.donationCampaign_paragraph3),
-                            style = MaterialTheme.typography.bodyMedium,
-                        )
-                    }
-
-                    HorizontalDivider()
-
-                    Button(
-                        modifier = Modifier
-                            .padding(top = MaterialTheme.padding.small)
-                            .padding(horizontal = MaterialTheme.padding.medium)
-                            .fillMaxWidth(),
-                        onClick = {
-                            navigator.push(SupportUsRoute)
-                            dismissSupportMessage()
-                        },
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
-                        ) {
-                            Icon(
-                                imageVector = MaterialSymbols.RoundedFilled.VolunteerActivism,
-                                contentDescription = null,
-                            )
-                            Text(
-                                text = stringResource(MR.strings.label_support_us),
-                                color = MaterialTheme.colorScheme.onPrimary,
-                            )
-                        }
-                    }
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
-                        modifier = Modifier
-                            .padding(bottom = MaterialTheme.padding.small)
-                            .padding(horizontal = MaterialTheme.padding.medium),
-                    ) {
-                        OutlinedButton(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f),
-                            onClick = { uriHandler.openUri(Constants.URL_DISCORD) },
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
-                            ) {
-                                Text(
-                                    text = stringResource(MR.strings.donationCampaign_contactPlatform),
-                                )
-                                Icon(
-                                    imageVector = MaterialSymbols.AutoMirroredRounded.OpenInNew,
-                                    contentDescription = null,
-                                )
-                            }
-                        }
-                        OutlinedButton(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f),
-                            onClick = dismissSupportMessage,
-                        ) {
-                            Text(
-                                text = stringResource(MR.strings.donationCampaign_dismiss),
-                            )
-                        }
-                    }
-                }
-            }
-        }
-
-        LaunchedEffect(Unit) {
-            try {
-                val firstInstallTime = packageManager.getPackageInfo(packageName, 0).firstInstallTime
-                val eligibleTime = Instant.fromEpochMilliseconds(firstInstallTime).plus(6 * 30.days)
-                showCampaign = (Clock.System.now() >= eligibleTime && !preferences.donationCampaignShown.get())
-            } catch (_: PackageManager.NameNotFoundException) {
             }
         }
     }
