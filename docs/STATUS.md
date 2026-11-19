@@ -11,8 +11,8 @@ Novel reader forked from Mihon. Android only. Working branch: `novel/main`
 | 1 | Rebrand | Done, pushed to `novel/main` |
 | 2 | Novel source API | Done, pushed |
 | 3 | One built-in source (Project Gutenberg) | In progress: chapter splitter done; catalogue blocked |
-| 4 | Text reader (Compose, paragraphs, progress in `chapter.last_page_read`, reader settings) | Pending |
-| 5 | Offline downloads as `chapter.html` — end of first usable version | Pending |
+| 4 | Text reader | Written, `check` passes; never run on a device |
+| 5 | Offline downloads as `chapter.html` — end of first usable version | In progress |
 | 6 | Local EPUB in `source-local` | Pending |
 | 7 | Separate extension repo + GitHub Pages index | Pending |
 | 8 | TTS, page mode, cleanup, signed release | Pending |
@@ -52,6 +52,17 @@ stay as they are; only user-facing text changes.
   - Not yet verified: the newer generated page on the main site (`/ebooks/<id>.html.images`); gutenberg.org
     was down for maintenance (503) on 2026-11-19.
 
+- Phase 4 (pushed; never seen running — no device, and no source returns text yet):
+  - `ui/reader/novel/`: `novelBlocks()` splits chapter HTML into headings, paragraphs and images, flattening
+    containers; `NovelPageLoader` turns them into `TextPage`s (one paragraph = one reader page);
+    `NovelViewer` is a Compose `LazyColumn` that reuses `WebtoonItems` and `WebtoonPageTracker`, so progress
+    (`last_page_read` = paragraph index), marking read, history and chapter transitions are the existing code.
+  - Routing: `readsAsText(source)` (= online source) picks `NovelPageLoader` in `ChapterLoader` and
+    `NovelViewer` in `ReaderActivity.updateViewer`, ahead of the reading-mode/WebGPU choice.
+  - Settings: font size (12–32 sp) and line spacing (1.0–2.5) on the reader settings' first tab for text.
+  - Known gaps: page slider and counter count paragraphs; no font family or sepia theme yet (reader themes
+    black/gray/white apply); `HttpPageLoader` is now unused for reading (remove in Phase 8).
+
 ## Build
 
 ```powershell
@@ -89,7 +100,7 @@ $env:JAVA_HOME = 'C:\Program Files\Eclipse Adoptium\jdk-24.0.2.12-hotspot'
 
 ## Next step
 
-Phase 3: catalogue (see Blocked), then `GutenbergSource` registered next to `LocalSource` in
+Phase 5: downloads. Phase 3 still open: catalogue (see Blocked), then `GutenbergSource` registered next to `LocalSource` in
 `AndroidSourceManager`, then one run on a phone.
 
 ## Decisions
