@@ -21,11 +21,11 @@ import tachiyomi.presentation.core.i18n.stringResource
 @Composable
 fun ReaderBottomBar(
     readingMode: ReadingMode,
-    onClickReadingMode: () -> Unit,
+    onClickReadingMode: (() -> Unit)?,
     orientation: ReaderOrientation,
     onClickOrientation: () -> Unit,
     cropEnabled: Boolean,
-    onClickCropBorder: () -> Unit,
+    onClickCropBorder: (() -> Unit)?,
     onClickSettings: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -35,11 +35,13 @@ fun ReaderBottomBar(
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        IconButton(onClick = onClickReadingMode) {
-            Icon(
-                imageVector = readingMode.icon,
-                contentDescription = stringResource(MR.strings.viewer),
-            )
+        if (onClickReadingMode != null) {
+            IconButton(onClick = onClickReadingMode) {
+                Icon(
+                    imageVector = readingMode.icon,
+                    contentDescription = stringResource(MR.strings.viewer),
+                )
+            }
         }
 
         IconButton(onClick = onClickOrientation) {
@@ -49,11 +51,17 @@ fun ReaderBottomBar(
             )
         }
 
-        IconButton(onClick = onClickCropBorder) {
-            Icon(
-                imageVector = if (cropEnabled) MaterialSymbols.Rounded.Crop else CustomMaterialSymbols.Rounded.CropOff,
-                contentDescription = stringResource(MR.strings.pref_crop_borders),
-            )
+        if (onClickCropBorder != null) {
+            IconButton(onClick = onClickCropBorder) {
+                Icon(
+                    imageVector = if (cropEnabled) {
+                        MaterialSymbols.Rounded.Crop
+                    } else {
+                        CustomMaterialSymbols.Rounded.CropOff
+                    },
+                    contentDescription = stringResource(MR.strings.pref_crop_borders),
+                )
+            }
         }
 
         IconButton(onClick = onClickSettings) {

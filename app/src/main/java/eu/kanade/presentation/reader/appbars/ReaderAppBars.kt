@@ -68,11 +68,11 @@ fun ReaderAppBars(
     onPageIndexChangeFinished: () -> Unit,
 
     readingMode: ReadingMode,
-    onClickReadingMode: () -> Unit,
+    onClickReadingMode: (() -> Unit)?,
     orientation: ReaderOrientation,
     onClickOrientation: () -> Unit,
     cropEnabled: Boolean,
-    onClickCropBorder: () -> Unit,
+    onClickCropBorder: (() -> Unit)?,
     onClickSettings: () -> Unit,
 ) {
     val backgroundColor = MaterialTheme.colorScheme

@@ -544,7 +544,12 @@ class ReaderActivity : BaseActivity() {
     @Composable
     fun AppBars(state: ReaderViewModel.State) {
         val isHttpSource = state.source is HttpSource
-        val readingMode = ReadingMode.fromPreference(viewModel.getMangaReadingMode())
+        val readsText = readsAsText(state.source)
+        val readingMode = if (readsText) {
+            ReadingMode.WEBTOON
+        } else {
+            ReadingMode.fromPreference(viewModel.getMangaReadingMode())
+        }
 
         val cropBorderPaged by readerPreferences.cropBorders.collectAsState()
         val cropBorderWebtoon by readerPreferences.cropBordersWebtoon.collectAsState()
@@ -600,7 +605,7 @@ class ReaderActivity : BaseActivity() {
             readingMode = ReadingMode.fromPreference(
                 viewModel.getMangaReadingMode(resolveDefault = false),
             ),
-            onClickReadingMode = viewModel::openReadingModeSelectDialog,
+            onClickReadingMode = viewModel::openReadingModeSelectDialog.takeIf { !readsText },
             orientation = ReaderOrientation.fromPreference(
                 viewModel.getMangaOrientation(resolveDefault = false),
             ),
@@ -610,7 +615,7 @@ class ReaderActivity : BaseActivity() {
                 val enabled = viewModel.toggleCropBorders()
                 menuToggleToast?.cancel()
                 menuToggleToast = toast(if (enabled) MR.strings.on else MR.strings.off)
-            },
+            }.takeIf { !readsText },
             onClickSettings = viewModel::openSettingsDialog,
         )
     }
