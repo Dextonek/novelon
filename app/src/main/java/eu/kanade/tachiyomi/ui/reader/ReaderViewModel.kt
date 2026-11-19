@@ -75,7 +75,6 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import logcat.LogPriority
 import mihon.core.metro.AppCoroutineScope
-import mihon.data.cache.ChapterCache
 import tachiyomi.core.common.preference.toggle
 import tachiyomi.core.common.util.system.logcat
 import tachiyomi.domain.chapter.interactor.GetChaptersByMangaId
@@ -125,7 +124,6 @@ class ReaderViewModel(
     private val coverManager: LocalCoverManager,
     private val updateManga: UpdateManga,
     private val coverCache: CoverCache,
-    private val chapterCache: ChapterCache,
     private val downloadCache: DownloadCache,
 ) : ViewModel() {
 
@@ -355,9 +353,6 @@ class ReaderViewModel(
                     context,
                     downloadManager,
                     downloadProvider,
-                    chapterCache,
-                    appScope,
-                    ::canLoadAhead,
                     manga,
                     source,
                 )

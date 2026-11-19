@@ -7,12 +7,12 @@ import eu.kanade.tachiyomi.data.download.DownloadProvider
 import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.online.HttpSource
 import eu.kanade.tachiyomi.ui.reader.model.ReaderChapter
-import kotlinx.coroutines.CoroutineScope
+import eu.kanade.tachiyomi.ui.reader.novel.NovelPageLoader
+import eu.kanade.tachiyomi.ui.reader.novel.readsAsText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import mihon.core.archive.archiveReader
 import mihon.core.archive.epubReader
-import mihon.data.cache.ChapterCache
 import tachiyomi.core.common.i18n.stringResource
 import tachiyomi.core.common.util.system.logcat
 import tachiyomi.domain.manga.model.Manga
@@ -28,9 +28,6 @@ class ChapterLoader(
     private val context: Context,
     private val downloadManager: DownloadManager,
     private val downloadProvider: DownloadProvider,
-    private val chapterCache: ChapterCache,
-    private val appScope: CoroutineScope,
-    private val canLoadAhead: () -> Boolean,
     private val manga: Manga,
     private val source: Source,
 ) {
@@ -107,7 +104,7 @@ class ChapterLoader(
                     is Format.Epub -> EpubPageLoader(format.file.epubReader(context))
                 }
             }
-            source is HttpSource -> HttpPageLoader(chapter, source, chapterCache, appScope, canLoadAhead)
+            readsAsText(source) -> NovelPageLoader(chapter, source as HttpSource)
             source is StubSource -> error(context.stringResource(MR.strings.source_not_installed, source.toString()))
             else -> error(context.stringResource(MR.strings.loader_not_implemented_error))
         }

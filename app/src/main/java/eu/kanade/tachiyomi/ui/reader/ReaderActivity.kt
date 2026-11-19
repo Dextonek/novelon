@@ -88,6 +88,8 @@ import eu.kanade.tachiyomi.ui.reader.ReaderViewModel.SetAsCoverResult.Success
 import eu.kanade.tachiyomi.ui.reader.model.ReaderChapter
 import eu.kanade.tachiyomi.ui.reader.model.ReaderPage
 import eu.kanade.tachiyomi.ui.reader.model.ViewerChapters
+import eu.kanade.tachiyomi.ui.reader.novel.NovelViewer
+import eu.kanade.tachiyomi.ui.reader.novel.readsAsText
 import eu.kanade.tachiyomi.ui.reader.setting.ReaderOrientation
 import eu.kanade.tachiyomi.ui.reader.setting.ReaderPreferences
 import eu.kanade.tachiyomi.ui.reader.setting.ReaderSettingsViewModel
@@ -631,8 +633,12 @@ class ReaderActivity : BaseActivity() {
     private fun updateViewer() {
         val prevViewer = viewer
         val readingMode = viewModel.getMangaReadingMode()
-        settingsViewModel.setViewerReadingMode(ReadingMode.fromPreference(readingMode))
-        val newViewer = ReadingMode.toViewer(readingMode, this)
+        val readsText = readsAsText(viewModel.state.value.source)
+        // Text scrolls vertically, so it takes the long strip's tap zones whatever mode the series is set to.
+        settingsViewModel.setViewerReadingMode(
+            if (readsText) ReadingMode.WEBTOON else ReadingMode.fromPreference(readingMode),
+        )
+        val newViewer = if (readsText) NovelViewer(this) else ReadingMode.toViewer(readingMode, this)
 
         setOrientation(viewModel.getMangaOrientation())
 
@@ -640,7 +646,7 @@ class ReaderActivity : BaseActivity() {
         prevViewer?.destroy()
         viewerFlow.value = newViewer
 
-        if (readerPreferences.showReadingMode.get()) {
+        if (readerPreferences.showReadingMode.get() && !readsText) {
             showReadingModeToast(viewModel.getMangaReadingMode())
         }
 
