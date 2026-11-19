@@ -95,6 +95,16 @@ interface Source {
      */
     suspend fun getPageList(chapter: SChapter): List<Page>
 
+    /**
+     * Get the text of a novel chapter as HTML. Only the chapter body is expected: paragraphs,
+     * headings, emphasis and inline images. Site navigation, comments and ads should be removed.
+     *
+     * @since novelon 1.0
+     * @param chapter the chapter.
+     * @return the chapter body as HTML.
+     */
+    suspend fun getChapterText(chapter: SChapter): String = throw UnsupportedOperationException()
+
     @Deprecated("Use the combined suspend API instead", ReplaceWith("getMangaUpdate"))
     fun fetchMangaDetails(manga: SManga): Observable<SManga> = throw UnsupportedOperationException()
 

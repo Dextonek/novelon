@@ -35,6 +35,9 @@ data class StubSource(
     override suspend fun getPageList(chapter: SChapter): List<Page> =
         throw SourceNotInstalledException()
 
+    override suspend fun getChapterText(chapter: SChapter): String =
+        throw SourceNotInstalledException()
+
     override fun toString(): String =
         if (!isInvalid) "$name (${lang.uppercase()})" else id.toString()
 
