@@ -38,9 +38,9 @@ class AppUpdateChecker(
 
 val GITHUB_REPO: String by lazy {
     if (isNightlyBuildType) {
-        "penkert-adus/novelon"
+        "Dextonek/novelon"
     } else {
-        "penkert-adus/novelon"
+        "Dextonek/novelon"
     }
 }
 

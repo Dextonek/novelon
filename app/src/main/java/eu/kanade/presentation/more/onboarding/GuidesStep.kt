@@ -56,7 +56,7 @@ internal class GuidesStep(
     }
 }
 
-const val GETTING_STARTED_URL = "https://github.com/penkert-adus/novelon#readme"
+const val GETTING_STARTED_URL = "https://github.com/Dextonek/novelon#readme"
 
 @PreviewLightDark
 @Composable

@@ -172,7 +172,7 @@ fun AboutScreen() {
                     LinkIcon(
                         label = "GitHub",
                         icon = SimpleIcons.Github,
-                        url = "https://github.com/penkert-adus/novelon",
+                        url = "https://github.com/Dextonek/novelon",
                     )
                 }
             }
