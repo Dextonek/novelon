@@ -42,16 +42,17 @@ import java.io.IOException
  */
 internal object ExtensionLoader {
 
-    private const val EXTENSION_FEATURE = "tachiyomi.extension"
-    private const val METADATA_SOURCE_CLASS = "tachiyomi.extension.class"
-    private const val METADATA_SOURCE_FACTORY = "tachiyomi.extension.factory"
-    private const val METADATA_NSFW = "tachiyomi.extension.nsfw"
+    // Own keys so Mihon's manga extensions, which can't provide chapter text, are never picked up.
+    private const val EXTENSION_FEATURE = "novelon.extension"
+    private const val METADATA_SOURCE_CLASS = "novelon.extension.class"
+    private const val METADATA_SOURCE_FACTORY = "novelon.extension.factory"
+    private const val METADATA_NSFW = "novelon.extension.nsfw"
 
-    private const val METADATA_NAME = "tachiyomix.name"
-    private const val METADATA_EXTENSION_LIB = "tachiyomix.extensionLib"
-    private const val METADATA_CONTENT_WARNING = "tachiyomix.contentWarning"
+    private const val METADATA_NAME = "novelon.name"
+    private const val METADATA_EXTENSION_LIB = "novelon.extensionLib"
+    private const val METADATA_CONTENT_WARNING = "novelon.contentWarning"
 
-    private val SUPPORTED_LIB_VERSIONS = listOf(1.4, 1.6)
+    private val SUPPORTED_LIB_VERSIONS = listOf(1.0)
 
     @Suppress("DEPRECATION")
     private val PACKAGE_FLAGS = PackageManager.GET_CONFIGURATIONS or
