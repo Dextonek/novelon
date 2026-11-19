@@ -7,14 +7,14 @@ Novel reader forked from Mihon. Android only. Working branch: `novel/main`
 
 | Phase | What | State |
 | --- | --- | --- |
-| 0 | Fork, clone, build unchanged app | Built; not yet run on a device |
+| 0 | Fork, clone, build unchanged app | Done; runs on a phone |
 | 1 | Rebrand | Done, pushed to `novel/main` |
 | 2 | Novel source API | Done, pushed |
-| 3 | One built-in source (Project Gutenberg) | Written on Gutendex, `check` passes; live API unverified |
-| 4 | Text reader | Written, `check` passes; never run on a device |
-| 5 | Offline downloads as `chapter.html` — end of first usable version | Written, `check` passes; never run on a device |
+| 3 | One built-in source (Project Gutenberg) | Works on a phone for cached Gutendex queries; catalogue unreliable |
+| 4 | Text reader | Works on a phone |
+| 5 | Offline downloads as `chapter.html` — end of first usable version | Works on a phone |
 | 6 | Local EPUB in `source-local` | Pending |
-| 7 | Separate extension repo + GitHub Pages index | Pending |
+| 7 | Separate extension repo + GitHub Pages index | Repo started locally with a FreeWebNovel source; no hosting or index yet |
 | 8 | TTS, page mode, cleanup, signed release | Pending |
 
 Internal names (`Manga`, `SManga`, `SChapter`, DB tables, `eu.kanade.tachiyomi` namespace, `mihon.*` packages)
@@ -77,6 +77,21 @@ stay as they are; only user-facing text changes.
   - `ChapterLoader` gives text sources a `NovelPageLoader` that reads that file when the chapter is
     downloaded, otherwise calls the source.
 
+- Device test (2026-11-19, OnePlus Nord 4 over adb wireless debugging):
+  - Works: Gutenberg Latest list, book details, chapter list, text reader, chapter transitions, saved
+    progress, marking read, add to library, font size, download, and reading the downloaded `chapter.html`
+    (checked by putting a marker paragraph into the file).
+  - Fixed and pushed: the reader menu ran right to left (the manga reading-mode default) and showed the
+    reading mode and crop buttons; the page number covered the text. New app icon: an open book with a
+    bookmark.
+  - Open: Gutendex timeouts and the missing opening chapter of book 80001 (HANDOVER.md, Known gaps).
+- Extension repo `C:\projects\novelon-extensions` (local, no remote): a monorepo modelled on
+  keiyoushi/extensions-source, one module per site under `src/<lang>/<name>`, a `novelon.extension` convention
+  plugin, and compile-only jars of Novelon's `source-api` and `core:common` in `libs/`
+  (`scripts/update-api-jars.sh` refreshes them). First extension: FreeWebNovel (freewebnovel.net), with
+  popular, latest, search, details, the full chapter list from one `/ajax-chapter-option` request, and
+  chapter text. Works on the phone.
+
 ## Build
 
 ```powershell
@@ -85,6 +100,9 @@ $env:JAVA_HOME = 'C:\Program Files\Eclipse Adoptium\jdk-24.0.2.12-hotspot'
 ```
 
 - JDK 24 works. The user-level `JAVA_HOME` points at JDK 26, which is untested with Gradle 9.9.1.
+- On a second PC the SDK was installed from the command-line tools into
+  `%LOCALAPPDATA%\Android\Sdk`, and JDK 25 (Adoptium) builds and passes `check`. Git there has no identity,
+  so commits pass `-c user.name=... -c user.email=...`.
 - RAM is tight; the first full build crashed the Gradle daemon out of memory. `--max-workers=2` got it through.
 - `./gradlew check` must pass before each commit (AGENTS.md).
 - Push: `git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push` (git has no stored
@@ -100,22 +118,24 @@ $env:JAVA_HOME = 'C:\Program Files\Eclipse Adoptium\jdk-24.0.2.12-hotspot'
 
 ## Blocked
 
-- Live check of the Gutenberg catalogue: Gutendex was unreachable at the end of 2026-11-19. User decided
-  the same day to build on Gutendex JSON now instead of waiting for gutenberg.org's OPDS feed; switching
-  to OPDS later stays an option if Gutendex stays unreliable.
+- Gutenberg catalogue: Gutendex answers only cached queries, and gutenberg.org (OPDS) returns 503. The
+  user's priority moved to web novels, so this waits.
 - Gutenberg's robot-access policy (gutenberg.org/policy/robot_access.html) is unread (site down). Read it
   before deciding how the app fetches books.
 
 ## Waiting on the user
 
-- Install the debug APK on a phone or emulator and confirm it starts.
+- Where to host `novelon-extensions` (a private repository is recommended).
 
 ## Next step
 
-Run the app on a phone or emulator: browse Project Gutenberg, open a book, read, download a chapter.
-Then Phase 6 (local EPUB).
+Host the extension repo and give it an index (Phase 7), then the Gutenberg catalogue and opening-chapter
+fixes, then Phase 6 (local EPUB).
 
 ## Decisions
 
 - App name: **Novelon**. No GitHub repo uses that exact name.
 - Application id: `io.github.dextonek.novelon` (debug build adds the `.dev` suffix).
+- 2026-11-19: the user wants to read web novels like those on freewebnovel.net. Sources for such sites live in
+  a separate extension repository, not in this public app repository (the user's choice, given the takedowns
+  Tachiyomi received for bundled sources).

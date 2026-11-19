@@ -8,10 +8,11 @@ a text reader. This document is for whoever picks the work up next. The running 
 ## The state in one paragraph
 
 Phases 0 to 5 of the plan are written: rebrand, novel source API, a built-in Project Gutenberg source, the text
-reader and offline downloads. Everything builds and `./gradlew check` passes. **The app has never been started
-on a phone or emulator**, so none of the screens has been seen working, and the Gutenberg catalogue API
-(Gutendex) was unreachable when the source was finished, so the source is tested only against saved responses.
-The first job is a run on a device.
+reader and offline downloads. Everything builds and `./gradlew check` passes. On 2026-11-19 the app ran on a
+phone (OnePlus Nord 4) for the first time: library, browsing, the text reader, chapter transitions, progress,
+font size and offline reading work. The user wants web novels rather than Gutenberg's classics, so the first
+extension, a FreeWebNovel source, lives in a separate repository (see below) and works on the phone. Gutendex,
+the Gutenberg catalogue API, only answers queries it has cached, so browsing Gutenberg is unreliable.
 
 ## Repository
 
@@ -21,11 +22,12 @@ The first job is a run on a device.
 | Working branch | `novel/main`. `main` is still Mihon's `main` at the fork point. |
 | Upstream | `upstream` remote = `mihonapp/mihon`. The fork is permanent: upstream changes are not merged. |
 | Rules for code and commits | [AGENTS.md](../AGENTS.md) (Mihon's, still in force) |
+| Extensions | `C:\projects\novelon-extensions` on the user's PC, local only, no remote yet. Sources for sites that host unlicensed translations stay out of this public repo. |
 
 ## Building
 
-Needs the Android SDK (platform 37.2, build-tools 37.0.0) and a JDK. JDK 24 is known to work with the
-project's Gradle 9.9.1; JDK 26 is untested.
+Needs the Android SDK (platform 37.2, build-tools 37.0.0, NDK 29.0.14206865) and a JDK. JDK 24 and JDK 25 are
+known to work with the project's Gradle 9.9.1; JDK 26 is untested.
 
 ```powershell
 $env:ANDROID_HOME = "$env:LOCALAPPDATA\Android\Sdk"
@@ -91,10 +93,14 @@ in the test suite because the books are large.
 
 ## Known gaps
 
-- Never run on a device (see above).
-- Gutendex reliability: it answered in 0.2 s for cached queries, took over 60 s for searches, and stopped
-  answering entirely later the same day. Gutenberg's own OPDS feed is the fallback, but its format and
-  Gutenberg's robot-access policy have not been read (the site was down).
+- Gutendex only answers queries it has cached (0.1 s). Any other query (Popular with `page=1`, page 2, a new
+  search, one filter alone) takes over 100 s or never answers, and the app shows "timeout". gutenberg.org
+  answered 503 to everything on 2026-11-19, so its OPDS feed and robot-access policy are still unread. The
+  PGLAF mirror serves the weekly catalogue `cache/epub/feeds/pg_catalog.csv.gz` (5.6 MB, 79,769 rows, 62,161
+  English texts, no download counts). Filter it on `Type == Text`: #20000, for example, is an audiobook without
+  HTML.
+- `GutenbergBook` drops the text before the first chapter heading. Book 80001 ("A bird in the hand") has no
+  "Chapter I" heading, so its first chapter is missing. A fix must keep title pages and contents out.
 - Reader: the page slider and counter count paragraphs; no font family or sepia theme; long-press does nothing.
 - Downloads: images inside a chapter are not downloaded.
 - `HttpPageLoader` (online image pages) is no longer used for reading but still referenced elsewhere.
@@ -105,11 +111,10 @@ in the test suite because the books are large.
 
 ## Next steps
 
-1. Install the debug APK on a phone or emulator. Browse Project Gutenberg, add a book, read a few chapters,
-   change font size, download a chapter and read it offline. Fix what breaks.
-2. Re-check Gutendex. If it stays unreliable, read gutenberg.org's robot-access policy and move the catalogue to
-   its OPDS feed.
+1. Decide where `novelon-extensions` is hosted (a private repository is the safe choice for FreeWebNovel) and
+   give it an index so Novelon can install and update extensions itself (Phase 7); filter repo listings by lib
+   version. Until then extensions are installed with `adb install` and trusted once in Browse > Extensions.
+2. Gutenberg: move the catalogue off Gutendex (mirror catalogue CSV, or gutenberg.org's OPDS feed once the site
+   answers) and fix the missing opening chapter.
 3. Phase 6: local EPUB files in `source-local`, read with the novel viewer.
-4. Phase 7: a separate extension repository with a Gradle template for novel sources and a GitHub Pages index;
-   move the Gutenberg source there and filter repo listings by lib version.
-5. Phase 8: text-to-speech, page mode, removal of the unused image paths, a real icon, a signed release.
+4. Phase 8: text-to-speech, page mode, removal of the unused image paths, a signed release.
