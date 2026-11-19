@@ -18,7 +18,7 @@
     <string name="track">Tracking</string>
     <string name="delete_downloaded">Delete downloaded</string>
     <string name="history">History</string>
-    <string name="scanlator">Scanlator</string>
+    <string name="scanlator">Translator</string>
 
     <!-- Screen titles -->
     <string name="label_more">More</string>
@@ -250,7 +250,7 @@
     <string name="follow_language">Follow language</string>
     <string name="time_24_hours">24-hour</string>
     <string name="time_12_hours">12-hour</string>
-    <string name="pref_display_images_description">Render images in manga descriptions</string>
+    <string name="pref_display_images_description">Render images in descriptions</string>
 
     <string name="pref_manage_notifications">Manage notifications</string>
     <string name="pref_app_language">App language</string>
@@ -326,7 +326,7 @@
 
     <string name="pref_hide_missing_chapter_indicators">Hide missing chapter indicators</string>
     <string name="pref_disallow_non_ascii_filenames">Disallow non-ASCII filenames</string>
-    <string name="pref_disallow_non_ascii_filenames_details">Ensures compatibility with certain storage media that don't support Unicode. When this is enabled, you'll need to manually rename source and manga folders by replacing non-ASCII characters with their lowercase UTF-8 hexadecimal representations. Chapter files don't need to be renamed.</string>
+    <string name="pref_disallow_non_ascii_filenames_details">Ensures compatibility with certain storage media that don't support Unicode. When this is enabled, you'll need to manually rename source and entry folders by replacing non-ASCII characters with their lowercase UTF-8 hexadecimal representations. Chapter files don't need to be renamed.</string>
     <string name="pref_enable_chapter_name_hash">Enable chapter name hash suffix</string>
     <string name="pref_enable_chapter_name_hash_details">Ensures a unique hash suffix is added to chapter names to prevent naming conflicts. If disabled, chapters with identical names cannot be downloaded.</string>
 
@@ -691,8 +691,8 @@
     <string name="pref_redact_sensitive_headers">Redact sensitive headers</string>
     <string name="pref_redact_sensitive_headers_summary">Redacts certain sensitive values in the logs. Keep enabled for your security when sharing logs with other people.</string>
     <string name="pref_debug_info">Debug info</string>
-    <string name="pref_update_library_manga_titles">Update library manga titles to match source</string>
-    <string name="pref_update_library_manga_titles_summary">Warning: if a manga is renamed, it will be removed from the download queue (if present).</string>
+    <string name="pref_update_library_manga_titles">Update library titles to match source</string>
+    <string name="pref_update_library_manga_titles_summary">Warning: if an entry is renamed, it will be removed from the download queue (if present).</string>
 
       <!-- About section -->
     <string name="website">Website</string>
@@ -784,7 +784,7 @@
     <string name="display_mode_chapter">Chapter %1$s</string>
     <!-- "... around 2 days" -->
     <string name="manga_interval_expected_update">New chapters predicted to be released in around %1$s, checking around every %2$s.</string>
-    <string name="manga_interval_expected_update_null">This manga is either completed, or there is no predicted release date.</string>
+    <string name="manga_interval_expected_update_null">This entry is either completed, or there is no predicted release date.</string>
     <string name="manga_interval_expected_update_soon">Soon</string>
     <string name="manga_interval_custom_amount">Custom update frequency:</string>
     <string name="chapter_downloading_progress">Downloading (%1$d/%2$d)</string>
@@ -810,8 +810,8 @@
     <string name="set_chapter_settings_as_default">Set as default</string>
     <string name="no_chapters_error">No chapters found</string>
     <string name="are_you_sure">Are you sure?</string>
-    <string name="exclude_scanlators">Exclude scanlators</string>
-    <string name="no_scanlators_found">No scanlators found</string>
+    <string name="exclude_scanlators">Exclude translators</string>
+    <string name="no_scanlators_found">No translators found</string>
     <string name="confirm_tracker_update">Update trackers to chapter %d?</string>
     <string name="trackers_updated_summary">Trackers updated to chapter %d</string>
 
@@ -893,7 +893,7 @@
     <string name="updates_last_update_info_just_now">Just now</string>
     <string name="relative_time_span_never">Never</string>
     <string name="action_view_upcoming">View Upcoming Updates</string>
-    <string name="action_filter_excluded_scanlators">Filter excluded scanlators</string>
+    <string name="action_filter_excluded_scanlators">Filter excluded translators</string>
     <string name="pref_filter_update_categories_details">Updates in excluded categories will not be shown even if they are also in any included categories.</string>
 
     <!-- Upcoming -->
