@@ -35,7 +35,7 @@ android {
     namespace = "eu.kanade.tachiyomi"
 
     defaultConfig {
-        applicationId = "io.github.penkertadus.novelon"
+        applicationId = "io.github.dextonek.novelon"
 
         versionCode = 39
         versionName = "0.21.3"

@@ -27,7 +27,7 @@ stay as they are; only user-facing text changes.
   for the user. Empty folders `D:\Android\_download\unz` are left behind; the agent could not delete them.
 - Baseline `gradlew check` on the unchanged code passes.
 - Phase 1 (six commits on `novel/main`, `check` passes):
-  - Application id `io.github.penkertadus.novelon`, app name and Gradle root name `Novelon`.
+  - Application id `io.github.dextonek.novelon`, app name and Gradle root name `Novelon`.
   - Update checker, onboarding guide and About link point at `Dextonek/novelon`.
   - Donation prompt, "Support us" entry, `SupportUsScreen` and its route removed.
   - About screen: privacy policy and Mihon social links removed; one GitHub link to the fork.
@@ -75,4 +75,4 @@ Phase 3: built-in Project Gutenberg source.
 ## Decisions
 
 - App name: **Novelon**. No GitHub repo uses that exact name.
-- Application id: `io.github.penkertadus.novelon` (debug build adds the `.dev` suffix).
+- Application id: `io.github.dextonek.novelon` (debug build adds the `.dev` suffix).
