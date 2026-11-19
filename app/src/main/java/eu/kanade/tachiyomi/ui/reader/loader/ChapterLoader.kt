@@ -4,6 +4,7 @@ import android.content.Context
 import eu.kanade.domain.chapter.model.toSChapter
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.download.DownloadProvider
+import eu.kanade.tachiyomi.data.download.Downloader
 import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.online.HttpSource
 import eu.kanade.tachiyomi.ui.reader.model.ReaderChapter
@@ -15,6 +16,7 @@ import mihon.core.archive.archiveReader
 import mihon.core.archive.epubReader
 import tachiyomi.core.common.i18n.stringResource
 import tachiyomi.core.common.util.system.logcat
+import tachiyomi.domain.chapter.model.Chapter
 import tachiyomi.domain.manga.model.Manga
 import tachiyomi.domain.source.model.StubSource
 import tachiyomi.i18n.MR
@@ -89,6 +91,15 @@ class ChapterLoader(
             source,
         )
         return when {
+            readsAsText(source) -> {
+                val sChapter = dbChapter.toSChapter()
+                val baseUri = (source as HttpSource).getChapterUrl(sChapter)
+                if (isDownloaded) {
+                    NovelPageLoader(baseUri, isLocal = true) { readDownloadedText(dbChapter) }
+                } else {
+                    NovelPageLoader(baseUri, isLocal = false) { source.getChapterText(sChapter) }
+                }
+            }
             isDownloaded -> DownloadPageLoader(
                 context,
                 chapter,
@@ -104,9 +115,21 @@ class ChapterLoader(
                     is Format.Epub -> EpubPageLoader(format.file.epubReader(context))
                 }
             }
-            readsAsText(source) -> NovelPageLoader(chapter, source as HttpSource)
             source is StubSource -> error(context.stringResource(MR.strings.source_not_installed, source.toString()))
             else -> error(context.stringResource(MR.strings.loader_not_implemented_error))
         }
+    }
+
+    private suspend fun readDownloadedText(chapter: Chapter): String {
+        val chapterDir = downloadProvider.findChapterDir(
+            chapter.name,
+            chapter.scanlator,
+            chapter.url,
+            manga.title,
+            source,
+        )
+        val file = chapterDir?.findFile(Downloader.TEXT_CHAPTER_FILE)
+            ?: error(context.stringResource(MR.strings.page_list_empty_error))
+        return file.openInputStream().use { it.readBytes().decodeToString() }
     }
 }
