@@ -78,7 +78,8 @@ $env:JAVA_HOME = 'C:\Program Files\Eclipse Adoptium\jdk-24.0.2.12-hotspot'
 - Phase 3 catalogue. Gutendex (gutendex.com, JSON) answers the popular list in 0.2 s, but search and the
   newest-first sort timed out after 60 s on 2026-11-19; the app's read timeout is 30 s. gutenberg.org's own
   catalogue feed (OPDS) couldn't be fetched because the site was down. Re-time Gutendex and fetch a real OPDS
-  response before writing the catalogue code; switching from Gutendex needs the user's OK.
+  response before writing the catalogue code. User decided (2026-11-19): wait for gutenberg.org and use its
+  OPDS feed if the robot-access policy allows it.
 - Gutenberg's robot-access policy (gutenberg.org/policy/robot_access.html) is unread (site down). Read it
   before deciding how the app fetches books.
 
