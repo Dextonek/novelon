@@ -12,7 +12,7 @@ Novel reader forked from Mihon. Android only. Working branch: `novel/main`
 | 2 | Novel source API | Done, pushed |
 | 3 | One built-in source (Project Gutenberg) | In progress: chapter splitter done; catalogue blocked |
 | 4 | Text reader | Written, `check` passes; never run on a device |
-| 5 | Offline downloads as `chapter.html` — end of first usable version | In progress |
+| 5 | Offline downloads as `chapter.html` — end of first usable version | Written, `check` passes; never run on a device |
 | 6 | Local EPUB in `source-local` | Pending |
 | 7 | Separate extension repo + GitHub Pages index | Pending |
 | 8 | TTS, page mode, cleanup, signed release | Pending |
@@ -63,6 +63,12 @@ stay as they are; only user-facing text changes.
   - Known gaps: page slider and counter count paragraphs; no font family or sepia theme yet (reader themes
     black/gray/white apply); `HttpPageLoader` is now unused for reading (remove in Phase 8).
 
+- Phase 5 (committed locally, not pushed; never seen running):
+  - `Downloader.downloadText` saves `getChapterText()` as `chapter.html` (`Downloader.TEXT_CHAPTER_FILE`) in the
+    chapter's download folder; no CBZ, no ComicInfo. Images in the text stay links to the source.
+  - `ChapterLoader` gives text sources a `NovelPageLoader` that reads that file when the chapter is
+    downloaded, otherwise calls the source.
+
 ## Build
 
 ```powershell
@@ -100,7 +106,7 @@ $env:JAVA_HOME = 'C:\Program Files\Eclipse Adoptium\jdk-24.0.2.12-hotspot'
 
 ## Next step
 
-Phase 5: downloads. Phase 3 still open: catalogue (see Blocked), then `GutenbergSource` registered next to `LocalSource` in
+Phase 3 is still open: catalogue (see Blocked), then `GutenbergSource` registered next to `LocalSource` in
 `AndroidSourceManager`, then one run on a phone.
 
 ## Decisions
