@@ -9,8 +9,8 @@ Novel reader forked from Mihon. Android only. Working branch: `novel/main`
 | --- | --- | --- |
 | 0 | Fork, clone, build unchanged app | Built; not yet run on a device |
 | 1 | Rebrand | Done, pushed to `novel/main` |
-| 2 | Novel source API (`getChapterText`, own extension feature tag and lib version in `ExtensionLoader.kt`) | Next |
-| 3 | One built-in source (Project Gutenberg) | Pending |
+| 2 | Novel source API | Done, pushed |
+| 3 | One built-in source (Project Gutenberg) | Next |
 | 4 | Text reader (Compose, paragraphs, progress in `chapter.last_page_read`, reader settings) | Pending |
 | 5 | Offline downloads as `chapter.html` — end of first usable version | Pending |
 | 6 | Local EPUB in `source-local` | Pending |
@@ -35,6 +35,12 @@ stay as they are; only user-facing text changes.
   - Base English strings: "manga" → "entry", "scanlator" → "translator". Translations untouched.
   - README notice that this is an unaffiliated fork of Mihon (Apache-2.0).
 
+- Phase 2 (pushed):
+  - `Source.getChapterText(chapter): String` returns the chapter body as HTML; default throws, `StubSource`
+    throws `SourceNotInstalledException`.
+  - `ExtensionLoader` only loads APKs with the `novelon.extension` feature and `novelon.*` metadata keys,
+    lib version `1.0`. Mihon/Tachiyomi extensions now show as unsupported.
+
 ## Build
 
 ```powershell
@@ -45,6 +51,8 @@ $env:JAVA_HOME = 'C:\Program Files\Eclipse Adoptium\jdk-24.0.2.12-hotspot'
 - JDK 24 works. The user-level `JAVA_HOME` points at JDK 26, which is untested with Gradle 9.9.1.
 - RAM is tight; the first full build crashed the Gradle daemon out of memory. `--max-workers=2` got it through.
 - `./gradlew check` must pass before each commit (AGENTS.md).
+- Push: `git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push` (git has no stored
+  GitHub login; gh's active account is Dextonek).
 
 ## Not changed on purpose
 
@@ -60,7 +68,7 @@ $env:JAVA_HOME = 'C:\Program Files\Eclipse Adoptium\jdk-24.0.2.12-hotspot'
 
 ## Next step
 
-Phase 2: novel source API.
+Phase 3: built-in Project Gutenberg source.
 
 ## Decisions
 
