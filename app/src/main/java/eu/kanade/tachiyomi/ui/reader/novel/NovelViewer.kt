@@ -25,6 +25,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.AndroidUiDispatcher
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -43,7 +44,8 @@ import eu.kanade.tachiyomi.ui.reader.viewer.transitionDownloadState
 import eu.kanade.tachiyomi.ui.reader.viewer.webtoon.WebtoonItems
 import eu.kanade.tachiyomi.ui.reader.viewer.webtoon.WebtoonPageTracker
 import eu.kanade.tachiyomi.util.system.createReaderThemeContext
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import mihon.app.di.appGraph
@@ -56,7 +58,8 @@ import kotlin.math.min
  */
 class NovelViewer(val activity: ReaderActivity) : Viewer {
 
-    private val scope = MainScope()
+    // Compose's main dispatcher carries the frame clock that animated scrolling needs.
+    private val scope = CoroutineScope(SupervisorJob() + AndroidUiDispatcher.Main)
     private val settingsViewModel = activity.settingsViewModel
     private val downloadManager by lazy { activity.appGraph.downloadManager }
     private val readerThemedContext = activity.createReaderThemeContext()
