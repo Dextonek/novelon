@@ -14,7 +14,7 @@ Novel reader forked from Mihon. Android only. Working branch: `novel/main`
 | 4 | Text reader | Works on a phone |
 | 5 | Offline downloads as `chapter.html` — end of first usable version | Works on a phone |
 | 6 | Local EPUB in `source-local` | Pending |
-| 7 | Separate extension repo + GitHub Pages index | Repo started locally with a FreeWebNovel source; no hosting or index yet |
+| 7 | Separate extension repo + GitHub Pages index | Repo started locally with one web-novel source; no hosting or index yet |
 | 8 | TTS, page mode, cleanup, signed release | Pending |
 
 Internal names (`Manga`, `SManga`, `SChapter`, DB tables, `eu.kanade.tachiyomi` namespace, `mihon.*` packages)
@@ -31,7 +31,8 @@ stay as they are; only user-facing text changes.
   - Update checker, onboarding guide and About link point at `Dextonek/novelon`.
   - Donation prompt, "Support us" entry, `SupportUsScreen` and its route removed.
   - About screen: privacy policy and Mihon social links removed; one GitHub link to the fork.
-  - Placeholder open-book icon (launcher, splash, notifications); debug build uses a brown background.
+  - Open-book icon (launcher, splash, notifications), replaced on 2026-11-19 by an open book with a
+    bookmark; debug build uses a brown background.
   - Base English strings: "manga" → "entry", "scanlator" → "translator". Translations untouched.
   - README notice that this is an unaffiliated fork of Mihon (Apache-2.0).
 
@@ -88,9 +89,8 @@ stay as they are; only user-facing text changes.
 - Extension repo `C:\projects\novelon-extensions` (local, no remote): a monorepo modelled on
   keiyoushi/extensions-source, one module per site under `src/<lang>/<name>`, a `novelon.extension` convention
   plugin, and compile-only jars of Novelon's `source-api` and `core:common` in `libs/`
-  (`scripts/update-api-jars.sh` refreshes them). First extension: FreeWebNovel (freewebnovel.net), with
-  popular, latest, search, details, the full chapter list from one `/ajax-chapter-option` request, and
-  chapter text. Works on the phone.
+  (`scripts/update-api-jars.sh` refreshes them). The first extension, a web-novel source, works on the
+  phone.
 
 ## Build
 
@@ -136,6 +136,5 @@ fixes, then Phase 6 (local EPUB).
 
 - App name: **Novelon**. No GitHub repo uses that exact name.
 - Application id: `io.github.dextonek.novelon` (debug build adds the `.dev` suffix).
-- 2026-11-19: the user wants to read web novels like those on freewebnovel.net. Sources for such sites live in
-  a separate extension repository, not in this public app repository (the user's choice, given the takedowns
-  Tachiyomi received for bundled sources).
+- 2026-11-19: the user wants to read web novels. Website sources live in a separate extension repository, not
+  in this app repository, as in Mihon.

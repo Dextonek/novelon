@@ -11,7 +11,7 @@ Phases 0 to 5 of the plan are written: rebrand, novel source API, a built-in Pro
 reader and offline downloads. Everything builds and `./gradlew check` passes. On 2026-11-19 the app ran on a
 phone (OnePlus Nord 4) for the first time: library, browsing, the text reader, chapter transitions, progress,
 font size and offline reading work. The user wants web novels rather than Gutenberg's classics, so the first
-extension, a FreeWebNovel source, lives in a separate repository (see below) and works on the phone. Gutendex,
+extension, a web-novel source, lives in a separate repository (see below) and works on the phone. Gutendex,
 the Gutenberg catalogue API, only answers queries it has cached, so browsing Gutenberg is unreliable.
 
 ## Repository
@@ -22,7 +22,7 @@ the Gutenberg catalogue API, only answers queries it has cached, so browsing Gut
 | Working branch | `novel/main`. `main` is still Mihon's `main` at the fork point. |
 | Upstream | `upstream` remote = `mihonapp/mihon`. The fork is permanent: upstream changes are not merged. |
 | Rules for code and commits | [AGENTS.md](../AGENTS.md) (Mihon's, still in force) |
-| Extensions | `C:\projects\novelon-extensions` on the user's PC, local only, no remote yet. Sources for sites that host unlicensed translations stay out of this public repo. |
+| Extensions | `C:\projects\novelon-extensions` on the user's PC, local only, no remote yet. Website sources stay out of this repo, as in Mihon. |
 
 ## Building
 
@@ -46,7 +46,7 @@ $env:JAVA_HOME = '<path to a JDK 24>'
 - App name Novelon, application id `io.github.dextonek.novelon`, Gradle root project `Novelon`.
 - Update checker, onboarding guide link and About link point at `Dextonek/novelon`.
 - Donation prompt, "Support us" screen and Mihon's social links removed.
-- Placeholder open-book icon (launcher, splash, notifications). It is a placeholder, not a design.
+- Open-book icon with a bookmark (launcher, splash, notifications); the debug build has a brown background.
 - English UI text says "entry" and "translator" instead of "manga" and "scanlator". Translations are untouched.
 
 ### Phase 2: source API
@@ -111,7 +111,7 @@ in the test suite because the books are large.
 
 ## Next steps
 
-1. Decide where `novelon-extensions` is hosted (a private repository is the safe choice for FreeWebNovel) and
+1. Decide where `novelon-extensions` is hosted (a private repository is the safe choice) and
    give it an index so Novelon can install and update extensions itself (Phase 7); filter repo listings by lib
    version. Until then extensions are installed with `adb install` and trusted once in Browse > Extensions.
 2. Gutenberg: move the catalogue off Gutendex (mirror catalogue CSV, or gutenberg.org's OPDS feed once the site
