@@ -39,7 +39,9 @@ stay as they are; only user-facing text changes.
   - `Source.getChapterText(chapter): String` returns the chapter body as HTML; default throws, `StubSource`
     throws `SourceNotInstalledException`.
   - `ExtensionLoader` only loads APKs with the `novelon.extension` feature and `novelon.*` metadata keys,
-    lib version `1.0`. Mihon/Tachiyomi extensions now show as unsupported.
+    lib version `1.0`. Installed Mihon/Tachiyomi extensions are ignored entirely (not listed).
+    Repo listings have no lib-version filter yet; a Mihon repo would still list extensions that then
+    fail to load — handle in Phase 7.
 
 ## Build
 
