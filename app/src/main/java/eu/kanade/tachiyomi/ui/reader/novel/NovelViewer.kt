@@ -3,21 +3,27 @@ package eu.kanade.tachiyomi.ui.reader.novel
 import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.scrollBy
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -49,6 +55,8 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import mihon.app.di.appGraph
+import tachiyomi.i18n.MR
+import tachiyomi.presentation.core.i18n.stringResource
 import tachiyomi.presentation.core.util.collectAsState
 import kotlin.math.min
 
@@ -72,6 +80,9 @@ class NovelViewer(val activity: ReaderActivity) : Viewer {
     )
     private val listState = LazyListState()
     private var hasMovedToFirstPage = false
+
+    /** The paragraph a partly read chapter was reopened at, marked so the reader finds their place. */
+    private var lastSeenPage by mutableStateOf<ReaderPage?>(null)
 
     /** Set while a transition button is held, so its tap doesn't also toggle the menu. */
     private var isButtonPressed = false
@@ -126,7 +137,10 @@ class NovelViewer(val activity: ReaderActivity) : Viewer {
             ) {
                 items(items.items, key = ::keyOf) { item ->
                     when (item) {
-                        is TextPage -> NovelBlockItem(item, text)
+                        is TextPage -> Column {
+                            NovelBlockItem(item, text)
+                            if (item == lastSeenPage) LastSeenMarker()
+                        }
                         is ChapterTransition -> TransitionItem(item)
                     }
                 }
@@ -165,6 +179,26 @@ class NovelViewer(val activity: ReaderActivity) : Viewer {
     }
 
     @Composable
+    private fun LastSeenMarker() {
+        val color = MaterialTheme.colorScheme.primary
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+        ) {
+            HorizontalDivider(Modifier.weight(1f), color = color)
+            Text(
+                text = stringResource(MR.strings.novel_last_seen),
+                style = MaterialTheme.typography.labelSmall,
+                color = color,
+                modifier = Modifier.padding(horizontal = 8.dp),
+            )
+            HorizontalDivider(Modifier.weight(1f), color = color)
+        }
+    }
+
+    @Composable
     private fun TransitionItem(transition: ChapterTransition) {
         val downloadState = remember(transition) {
             downloadManager.transitionDownloadState(
@@ -198,7 +232,9 @@ class NovelViewer(val activity: ReaderActivity) : Viewer {
         if (!hasMovedToFirstPage) {
             val pages = chapters.currChapter.pages ?: return
             hasMovedToFirstPage = true
-            moveToPage(pages[min(chapters.currChapter.requestedPage, pages.lastIndex)])
+            val page = pages[min(chapters.currChapter.requestedPage, pages.lastIndex)]
+            if (chapters.currChapter.requestedPage > 0) lastSeenPage = page
+            moveToPage(page)
         }
     }
 
