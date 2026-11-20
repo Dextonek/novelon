@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="72 72 288 288" width="288" height="288">
+  <defs>
+    <linearGradient id="bg" gradientUnits="userSpaceOnUse" x1="0" y1="72" x2="0" y2="360">
+      <stop offset="0" stop-color="#33578F"/>
+      <stop offset="1" stop-color="#1A2B4C"/>
+    </linearGradient>
+  </defs>
+  <rect x="72" y="72" width="288" height="288" rx="64" fill="url(#bg)"/>
+  <path fill="#FFFFFF" fill-rule="evenodd" d="M208,158C182,142 140,138 108,148L108,282C140,272 182,276 208,292ZM224,158C250,142 292,138 324,148L324,282C292,272 250,276 224,292ZM132,176h56a4,4 0,0 1,0 8h-56a4,4 0,0 1,0 -8zM132,198h56a4,4 0,0 1,0 8h-56a4,4 0,0 1,0 -8zM132,220h56a4,4 0,0 1,0 8h-56a4,4 0,0 1,0 -8zM132,242h36a4,4 0,0 1,0 8h-36a4,4 0,0 1,0 -8zM244,176h26a4,4 0,0 1,0 8h-26a4,4 0,0 1,0 -8zM244,198h26a4,4 0,0 1,0 8h-26a4,4 0,0 1,0 -8zM244,220h56a4,4 0,0 1,0 8h-56a4,4 0,0 1,0 -8zM244,242h42a4,4 0,0 1,0 8h-42a4,4 0,0 1,0 -8zM282,128h20v78l-10,-10l-10,10z"/>
+  <path fill="#F4B740" d="M282,128h20v78l-10,-10l-10,10z"/>
+</svg>

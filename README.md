@@ -1,50 +1,123 @@
+<div align="center">
+
+<img src="./.github/assets/novelon.svg" alt="Novelon logo" width="112"/>
+
 # Novelon
 
-A novel reader for Android. Browse sources, add novels to your library and read them as text, with the font
-size and line spacing you like. Chapters can be downloaded for offline reading.
+### A novel reader for Android
+
+Browse sources, build a library and read novels as clean, adjustable text: online or offline.
+
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-0877d2?labelColor=27303D)](./LICENSE)
+[![Android 8.0+](https://img.shields.io/badge/Android-8.0%2B-3DDC84?labelColor=27303D&logo=android&logoColor=white)](#building)
+[![Kotlin](https://img.shields.io/badge/Kotlin-Jetpack%20Compose-7F52FF?labelColor=27303D&logo=kotlin&logoColor=white)](https://developer.android.com/compose)
+[![Fork of Mihon](https://img.shields.io/badge/fork%20of-Mihon-946300?labelColor=27303D)](https://github.com/mihonapp/mihon)
+[![Status: early development](https://img.shields.io/badge/status-early%20development-F4B740?labelColor=27303D)](#roadmap)
+
+<img src="./.github/assets/screenshots/reader.png" alt="Reading a chapter" width="260"/>
+&nbsp;&nbsp;
+<img src="./.github/assets/screenshots/more.png" alt="The More tab" width="260"/>
+
+</div>
+
+## About
+
+Novelon takes [Mihon](https://github.com/mihonapp/mihon), a mature manga reader, and turns it into a reader for
+text novels. The library, sources, downloads and backups stay; the image viewers give way to a reader built for
+text. Sources return each chapter as HTML, and Novelon lays it out at the font size and line spacing you choose.
 
 > [!NOTE]
-> Novelon is a fork of [Mihon](https://github.com/mihonapp/mihon), the manga reader, reworked for text novels.
-> It is not affiliated with or endorsed by the Mihon project.
-
-## Status
-
-Early development. There is no release yet. Build it from source (see below).
-
-*Requires Android 8.0 or higher.*
+> Novelon is not affiliated with or endorsed by the Mihon project.
 
 ## Features
 
-* A text reader that scrolls through a chapter paragraph by paragraph and continues into the next chapter.
-* Font size and line spacing settings, and light, dark and reader themes.
-* Reading progress saved per chapter, with a marker where you stopped when you reopen one.
-* Chapter downloads for offline reading.
-* A built-in [Project Gutenberg](https://www.gutenberg.org) source with tens of thousands of public-domain books.
-* Extensions for other sources, installed separately from the app.
-* From Mihon: library categories, scheduled library updates, and backups.
+| | |
+| --- | --- |
+| **Text reader** | Scrolls through a chapter paragraph by paragraph and carries on into the next chapter. Tap to page down. |
+| **Your layout** | Font size, line spacing, and the reader's light, dark and grey themes. |
+| **Never lose your place** | Progress is saved per chapter. Reopen one and a *Last seen* line marks where you stopped. |
+| **Offline reading** | Download chapters and read them without a connection. |
+| **Public-domain classics** | A built-in [Project Gutenberg](https://www.gutenberg.org) source. |
+| **Extensions** | More sources as separate, installable extensions, each trusted once before it runs. |
+| **Library** | Categories, scheduled updates for new chapters, reading history and statistics. |
+| **Backups** | Back up your library locally or to the cloud service you prefer. |
+
+## Getting started
+
+1. Build and install the app (see [Building](#building)).
+2. Open **Browse** and pick a source, such as **Project Gutenberg**.
+3. Open a novel and tap **Add to library**.
+4. Tap a chapter to start reading. Tap the middle of the screen for the menu, and open the reader settings to
+   change the font size and line spacing.
+5. To read offline, download chapters from the novel's chapter list.
 
 ## Extensions
 
-Novelon itself ships only the Project Gutenberg source. Other sources are extensions: separate APKs built
-from their own repository, the way Mihon does it. Novelon asks you to trust an extension once before using it.
-The extension repository is not public yet.
+Novelon itself ships only the Project Gutenberg source. Every other source is an **extension**: a small APK
+built from its own repository, the way Mihon handles sources. Extensions are kept out of this repository on
+purpose.
+
+An extension declares the `novelon.extension` feature, and Novelon asks you to trust its signature the first time
+it finds it (**Browse → Extensions**). An extension repository with an index, so the app can install and
+update extensions itself, is on the [roadmap](#roadmap). Until then, extensions are installed with
+`adb install`.
+
+To write a source, implement the usual Mihon `HttpSource` methods for listing and details, and
+`getChapterText(chapter)`, which returns the chapter body as HTML.
+
+## Roadmap
+
+| | Milestone | State |
+| --- | --- | --- |
+| ✅ | Rebrand from Mihon | Done |
+| ✅ | Novel source API (`getChapterText`) | Done |
+| ✅ | Built-in Project Gutenberg source | Done; catalogue lookups are unreliable at times |
+| ✅ | Text reader | Done |
+| ✅ | Offline downloads | Done |
+| 🚧 | Extension repository with an index for in-app installs | In progress |
+| ⏳ | Local EPUB files | Planned |
+| ⏳ | Text-to-speech, page mode, a signed release | Planned |
 
 ## Building
 
-Needs a JDK (24 or 25 are known to work) and the Android SDK.
+| Requirement | Version |
+| --- | --- |
+| JDK | 24 or 25 |
+| Android SDK | platform 37.2, build-tools 37.0.0 |
+| Android device | 8.0 or newer |
 
 ```sh
 ./gradlew assembleDebug
 ```
 
-The debug APKs end up in `app/build/outputs/apk/debug/` and install next to a release build as
-`io.github.dextonek.novelon.dev`. Run `./gradlew check` before committing.
+The APKs land in `app/build/outputs/apk/debug/`. The debug build installs as `io.github.dextonek.novelon.dev`
+with a brown icon, so it can sit next to a release build.
+
+## Project layout
+
+Novelon keeps Mihon's modules and internal names (`Manga`, `SChapter`, `eu.kanade.tachiyomi`); only what users
+see was renamed. The novel-specific code lives here:
+
+| Path | What |
+| --- | --- |
+| `source-api/.../source/Source.kt` | `getChapterText`, the call that turns a chapter into HTML |
+| `app/.../ui/reader/novel/` | The text reader: splitting chapters into blocks and showing them |
+| `app/.../mihon/source/gutenberg/` | The built-in Project Gutenberg source |
+| `app/.../extension/util/ExtensionLoader.kt` | Finding and trusting installed extensions |
+| `docs/` | [Handover](./docs/HANDOVER.md) and [status log](./docs/STATUS.md) |
 
 ## Contributing
 
-Work happens on the `novel/main` branch; `main` follows Mihon. Read [AGENTS.md](./AGENTS.md) for the rules on
-code and commits, and [docs/HANDOVER.md](./docs/HANDOVER.md) and [docs/STATUS.md](./docs/STATUS.md) for where
-the project stands.
+Work happens on the **`novel/main`** branch; `main` tracks Mihon. Before you start:
+
+* read [AGENTS.md](./AGENTS.md) for the rules on code, comments and commits;
+* read [docs/HANDOVER.md](./docs/HANDOVER.md) and [docs/STATUS.md](./docs/STATUS.md) for where things stand;
+* run `./gradlew check` before every commit.
+
+## Credits
+
+Novelon is built on [Mihon](https://github.com/mihonapp/mihon) and, before it, Tachiyomi. Thanks to everyone who
+contributed to them. Public-domain books come from [Project Gutenberg](https://www.gutenberg.org).
 
 ## Disclaimer
 
