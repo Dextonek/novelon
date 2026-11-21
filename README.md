@@ -57,10 +57,14 @@ Novelon itself ships only the Project Gutenberg source. Every other source is an
 built from its own repository, the way Mihon handles sources. Extensions are kept out of this repository on
 purpose.
 
-An extension declares the `novelon.extension` feature, and Novelon asks you to trust its signature the first time
-it finds it (**Browse → Extensions**). An extension repository with an index, so the app can install and
-update extensions itself, is on the [roadmap](#roadmap). Until then, extensions are installed with
-`adb install`.
+To get them, open **Settings → Browse → Extension repos** and add
+
+```
+https://raw.githubusercontent.com/Dextonek/novelon-extensions/main/index.min.json
+```
+
+then install and update extensions from **Browse → Extensions**. Extensions from that repository are trusted
+through its signing key; one installed by hand asks you to trust it the first time Novelon finds it.
 
 To write a source, implement the usual Mihon `HttpSource` methods for listing and details, and
 `getChapterText(chapter)`, which returns the chapter body as HTML.
@@ -74,7 +78,7 @@ To write a source, implement the usual Mihon `HttpSource` methods for listing an
 | ✅ | Built-in Project Gutenberg source | Done; catalogue lookups are unreliable at times |
 | ✅ | Text reader | Done |
 | ✅ | Offline downloads | Done |
-| 🚧 | Extension repository with an index for in-app installs | In progress |
+| ✅ | [Extension repository](https://github.com/Dextonek/novelon-extensions) for in-app installs | Done |
 | ⏳ | Local EPUB files | Planned |
 | ⏳ | Text-to-speech, page mode, a signed release | Planned |
 

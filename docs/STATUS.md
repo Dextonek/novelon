@@ -14,7 +14,7 @@ Novel reader forked from Mihon. Android only. Working branch: `novel/main`
 | 4 | Text reader | Works on a phone |
 | 5 | Offline downloads as `chapter.html` — end of first usable version | Works on a phone |
 | 6 | Local EPUB in `source-local` | Pending |
-| 7 | Separate extension repo + GitHub Pages index | Repo started locally with one web-novel source; no hosting or index yet |
+| 7 | Separate extension repo + index | Source repo local; signed repository with two extensions published on GitHub; install from the app not yet tried on the phone |
 | 8 | TTS, page mode, cleanup, signed release | Pending |
 
 Internal names (`Manga`, `SManga`, `SChapter`, DB tables, `eu.kanade.tachiyomi` namespace, `mihon.*` packages)
@@ -41,8 +41,7 @@ stay as they are; only user-facing text changes.
     throws `SourceNotInstalledException`.
   - `ExtensionLoader` only loads APKs with the `novelon.extension` feature and `novelon.*` metadata keys,
     lib version `1.0`. Installed Mihon/Tachiyomi extensions are ignored entirely (not listed).
-    Repo listings have no lib-version filter yet; a Mihon repo would still list extensions that then
-    fail to load — handle in Phase 7.
+    Repo listings are filtered to lib version `1.0` too (2026-11-21).
 
 - Phase 3 (committed locally, not pushed):
   - `mihon.source.gutenberg.GutenbergBook` splits a Gutenberg HTML book at its most frequent h1–h3 heading,
@@ -89,8 +88,19 @@ stay as they are; only user-facing text changes.
 - Extension repo `C:\projects\novelon-extensions` (local, no remote): a monorepo modelled on
   keiyoushi/extensions-source, one module per site under `src/<lang>/<name>`, a `novelon.extension` convention
   plugin, and compile-only jars of Novelon's `source-api` and `core:common` in `libs/`
-  (`scripts/update-api-jars.sh` refreshes them). The first extension, a web-novel source, works on the
-  phone.
+  (`scripts/update-api-jars.sh` refreshes them). Three web-novel sources work on the phone.
+- 2026-11-20 and 21, reader:
+  - A "Last seen" line marks where a partly read chapter was left. It comes from the progress saved before the
+    reader opened (`ReaderChapter.stoppedAtPage`), so a rotation, which recreates the reader, doesn't move it.
+  - Progress is now the paragraph at the top of the screen, so reopening shows the same text instead of
+    jumping a screen ahead; a chapter's last paragraph is reported once its end is visible, so it still gets
+    marked read. Checked on the phone, including rotation.
+  - README rewritten for Novelon, with the logo and screenshots in `.github/assets`.
+- 2026-11-21, extension repository (Phase 7):
+  - `./gradlew buildRepo` in the extension source repo signs the release APKs and writes `repo.json` and
+    `index.min.json` in Mihon's legacy format. Modules with `listed = false` are built but not published.
+  - Published to the public `Dextonek/novelon-extensions` (APKs and index only). Signing key fingerprint
+    `15a9b7eb3ca747364a06859bebada69cbbdc96613b01cae41fbc5f4c25a0eed2`.
 
 ## Build
 
@@ -125,12 +135,13 @@ $env:JAVA_HOME = 'C:\Program Files\Eclipse Adoptium\jdk-24.0.2.12-hotspot'
 
 ## Waiting on the user
 
-- Where to host `novelon-extensions` (a private repository is recommended).
+- Nothing. Decided 2026-11-21: a public repository holding only the built extensions, without the source whose
+  site mostly hosts unlicensed translations.
 
 ## Next step
 
-Host the extension repo and give it an index (Phase 7), then the Gutenberg catalogue and opening-chapter
-fixes, then Phase 6 (local EPUB).
+Try installing both extensions from the repository on the phone, then the Gutenberg catalogue and
+opening-chapter fixes, then Phase 6 (local EPUB).
 
 ## Decisions
 

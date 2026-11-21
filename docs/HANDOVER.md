@@ -10,9 +10,11 @@ a text reader. This document is for whoever picks the work up next. The running 
 Phases 0 to 5 of the plan are written: rebrand, novel source API, a built-in Project Gutenberg source, the text
 reader and offline downloads. Everything builds and `./gradlew check` passes. On 2026-11-19 the app ran on a
 phone (OnePlus Nord 4) for the first time: library, browsing, the text reader, chapter transitions, progress,
-font size and offline reading work. The user wants web novels rather than Gutenberg's classics, so the first
-extension, a web-novel source, lives in a separate repository (see below) and works on the phone. Gutendex,
-the Gutenberg catalogue API, only answers queries it has cached, so browsing Gutenberg is unreliable.
+font size and offline reading work. The user wants web novels rather than Gutenberg's classics, so three
+web-novel sources live as extensions in a separate repository (see below). Two of them are published in an
+extension repository that Novelon installs and updates from; the third, whose site mostly hosts unlicensed
+translations, is installed by hand. Gutendex, the Gutenberg catalogue API, only answers queries it has cached,
+so browsing Gutenberg is unreliable.
 
 ## Repository
 
@@ -22,7 +24,9 @@ the Gutenberg catalogue API, only answers queries it has cached, so browsing Gut
 | Working branch | `novel/main`. `main` is still Mihon's `main` at the fork point. |
 | Upstream | `upstream` remote = `mihonapp/mihon`. The fork is permanent: upstream changes are not merged. |
 | Rules for code and commits | [AGENTS.md](../AGENTS.md) (Mihon's, still in force) |
-| Extensions | `C:\projects\novelon-extensions` on the user's PC, local only, no remote yet. Website sources stay out of this repo, as in Mihon. |
+| Extension source | `C:\projects\novelon-extensions` on the user's PC, local only. Website sources stay out of this repo, as in Mihon. See its README. |
+| Extension repository | `github.com/Dextonek/novelon-extensions` (public): only the built APKs and the index, from `./gradlew buildRepo`. Users add `https://raw.githubusercontent.com/Dextonek/novelon-extensions/main/index.min.json`. Local checkout: `C:\projects\novelon-extensions-repo`. |
+| Extension signing key | `%USERPROFILE%\.novelon\extensions-release.jks`, password in `%USERPROFILE%\.gradle\gradle.properties`. Not in any repo; losing it forces every user to reinstall the extensions. |
 
 ## Building
 
@@ -101,19 +105,20 @@ in the test suite because the books are large.
   HTML.
 - `GutenbergBook` drops the text before the first chapter heading. Book 80001 ("A bird in the hand") has no
   "Chapter I" heading, so its first chapter is missing. A fix must keep title pages and contents out.
-- Reader: the page slider and counter count paragraphs; no font family or sepia theme; long-press does nothing.
+- Reader: the page slider and counter count paragraphs, and progress is the paragraph at the top of the screen
+  (a chapter's last paragraph once its end is on screen, so finishing marks it read). Reopening a partly read
+  chapter draws a "Last seen" line above the saved paragraph. No font family or sepia theme; long-press does
+  nothing.
 - Downloads: images inside a chapter are not downloaded.
 - `HttpPageLoader` (online image pages) is no longer used for reading but still referenced elsewhere.
 - Trackers still identify as Mihon (user agents, OAuth client ids, `mihon://` and `app.mihon` callbacks). Using
   them needs Novelon's own tracker app registrations.
-- Extension repo listings don't filter by lib version, so a Mihon repo would list extensions that then fail to
-  load.
 
 ## Next steps
 
-1. Decide where `novelon-extensions` is hosted (a private repository is the safe choice) and
-   give it an index so Novelon can install and update extensions itself (Phase 7); filter repo listings by lib
-   version. Until then extensions are installed with `adb install` and trusted once in Browse > Extensions.
+1. Check on the phone that installing and updating from the extension repository works (it was published on
+   2026-11-21 while the phone was unreachable). The debug-signed copies installed earlier must be uninstalled
+   first.
 2. Gutenberg: move the catalogue off Gutendex (mirror catalogue CSV, or gutenberg.org's OPDS feed once the site
    answers) and fix the missing opening chapter.
 3. Phase 6: local EPUB files in `source-local`, read with the novel viewer.
