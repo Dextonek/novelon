@@ -52,7 +52,7 @@ internal object ExtensionLoader {
     private const val METADATA_EXTENSION_LIB = "novelon.extensionLib"
     private const val METADATA_CONTENT_WARNING = "novelon.contentWarning"
 
-    private val SUPPORTED_LIB_VERSIONS = listOf(1.0)
+    val SUPPORTED_LIB_VERSIONS = listOf(1.0)
 
     @Suppress("DEPRECATION")
     private val PACKAGE_FLAGS = PackageManager.GET_CONFIGURATIONS or

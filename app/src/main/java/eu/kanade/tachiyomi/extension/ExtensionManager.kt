@@ -82,6 +82,8 @@ class ExtensionManager(
     val availableExtensionsFlow = availableExtensionListFlow
         .map { extensions ->
             extensions
+                // A store can also list extensions for other apps or older Novelon versions, which would never load
+                .filter { it.libVersion in ExtensionLoader.SUPPORTED_LIB_VERSIONS }
                 .groupBy { it.pkgName to it.store.signingKey }
                 .values
                 .map { listings ->
