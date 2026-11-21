@@ -19,9 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -81,9 +79,6 @@ class NovelViewer(val activity: ReaderActivity) : Viewer {
     private val listState = LazyListState()
     private var hasMovedToFirstPage = false
 
-    /** The paragraph a partly read chapter was reopened at, marked so the reader finds their place. */
-    private var lastSeenPage by mutableStateOf<ReaderPage?>(null)
-
     /** Set while a transition button is held, so its tap doesn't also toggle the menu. */
     private var isButtonPressed = false
 
@@ -139,7 +134,7 @@ class NovelViewer(val activity: ReaderActivity) : Viewer {
                     when (item) {
                         is TextPage -> Column {
                             NovelBlockItem(item, text)
-                            if (item == lastSeenPage) LastSeenMarker()
+                            if (item.index == item.chapter.stoppedAtPage) LastSeenMarker()
                         }
                         is ChapterTransition -> TransitionItem(item)
                     }
@@ -232,9 +227,7 @@ class NovelViewer(val activity: ReaderActivity) : Viewer {
         if (!hasMovedToFirstPage) {
             val pages = chapters.currChapter.pages ?: return
             hasMovedToFirstPage = true
-            val page = pages[min(chapters.currChapter.requestedPage, pages.lastIndex)]
-            if (chapters.currChapter.requestedPage > 0) lastSeenPage = page
-            moveToPage(page)
+            moveToPage(pages[min(chapters.currChapter.requestedPage, pages.lastIndex)])
         }
     }
 

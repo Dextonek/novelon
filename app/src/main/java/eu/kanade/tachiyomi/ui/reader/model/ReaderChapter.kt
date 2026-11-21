@@ -29,6 +29,9 @@ data class ReaderChapter(private val loadedChapter: Chapter) {
 
     var requestedPage: Int = 0
 
+    /** The page reading had stopped at before the reader opened, if the chapter was left partly read. */
+    val stoppedAtPage: Int? = loadedChapter.lastPageRead.takeIf { !loadedChapter.read && it > 0 }
+
     private var references = 0
 
     fun update(transform: (Chapter) -> Chapter) {
