@@ -67,6 +67,29 @@ class NovelReaderTest {
         lastEndVisibleIndex(items, viewportStart = 0, viewportEnd = 500) shouldBe 3
     }
 
+    @Test
+    fun `reports the paragraph at the top of the screen`() {
+        val items = listOf(item(4, offset = -50, size = 100), item(5, offset = 50, size = 400), item(6, 450, 200))
+
+        topVisibleIndex(items, viewportEnd = 500) { false } shouldBe 4
+        topVisibleIndex(items.drop(1) + item(7, 650, 50), viewportEnd = 500) { false } shouldBe 5
+    }
+
+    @Test
+    fun `skips a paragraph that has scrolled past the top`() {
+        val items = listOf(item(4, offset = -100, size = 100), item(5, offset = 0, size = 400))
+
+        topVisibleIndex(items, viewportEnd = 500) { false } shouldBe 5
+    }
+
+    @Test
+    fun `reports the last paragraph of a chapter once its end is on screen`() {
+        val items = listOf(item(4, offset = 0, size = 300), item(5, offset = 300, size = 100), item(6, 400, 300))
+
+        topVisibleIndex(items, viewportEnd = 500) { it == 5 } shouldBe 5
+        topVisibleIndex(items, viewportEnd = 350) { it == 5 } shouldBe 4
+    }
+
     private fun item(index: Int, offset: Int, size: Int) = object : LazyListItemInfo {
         override val index = index
         override val key: Any = index

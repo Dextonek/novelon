@@ -89,7 +89,7 @@ class NovelViewer(val activity: ReaderActivity) : Viewer {
 
         LaunchedEffect(listState) {
             snapshotFlow { listState.layoutInfo }.collect { info ->
-                lastEndVisibleIndex(info.visibleItemsInfo, info.viewportStartOffset, info.viewportEndOffset)
+                topVisibleIndex(info.visibleItemsInfo, info.viewportEndOffset, ::isChapterEnd)
                     ?.let(tracker::onScrolled)
             }
         }
@@ -133,8 +133,8 @@ class NovelViewer(val activity: ReaderActivity) : Viewer {
                 items(items.items, key = ::keyOf) { item ->
                     when (item) {
                         is TextPage -> Column {
-                            NovelBlockItem(item, text)
                             if (item.index == item.chapter.stoppedAtPage) LastSeenMarker()
+                            NovelBlockItem(item, text)
                         }
                         is ChapterTransition -> TransitionItem(item)
                     }
@@ -253,6 +253,11 @@ class NovelViewer(val activity: ReaderActivity) : Viewer {
                 listState.scrollBy(distance)
             }
         }
+    }
+
+    private fun isChapterEnd(index: Int): Boolean {
+        val page = items.items.getOrNull(index) as? ReaderPage ?: return false
+        return page.index == page.chapter.pages?.lastIndex
     }
 
     /** Keys must survive chapters being added above, so the list keeps its place, and fit in a Bundle. */
